@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dto.Employee;
 import service.IEmployeeService;
 import serviceFactory.EmployeeServiceFactory;
 
@@ -60,6 +61,33 @@ public class ControllerServlet extends HttpServlet {
 				out.println("<h1 style='color:green;text-align:center;'>Deleted Successfully</h1>");
 			} else {
 				out.println("<h1 style='color:red;text-align:center;'>Something Went Wrong!!!</h1>");
+			}
+		} else if (request.getRequestURI().endsWith("searchform")) {
+			Integer id = Integer.parseInt(request.getParameter("eid"));
+			Employee employee = employeeService.searchEmployee(id);
+			PrintWriter out = null;
+
+			try {
+				out = response.getWriter();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			if (employee != null) {
+				out.println("<html><head><title>Employee Details</title></head>");
+				out.println("<body>");
+				out.println("<center>");
+				out.println("<table border='1'>");
+				out.println("<tr><th>Name::</th><td>" + employee.getName() + "</td></tr>");
+				out.println("<tr><th>I'D::</th><td>" + employee.getId() + "</td></tr>");
+				out.println("<tr><th>Department::</th><td>" + employee.getDept() + "</td></tr>");
+				out.println("<tr><th>Salary::</th><td>" + employee.getSalary() + "</td></tr>");
+				out.println("</table>");
+				out.println("</center>");
+				out.println("</body>");
+				out.println("</html>");
+			} else {
+				out.println("<h1 style='color:red;text-align:center'>Details not found!!!</h1>");
 			}
 		}
 	}

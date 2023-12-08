@@ -3,6 +3,7 @@ package dao;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import dto.Employee;
@@ -74,6 +75,39 @@ public class EmployeeDAOImpl implements IEmployeeDAO {
 
 	@Override
 	public Employee searchEmployee(int id) {
+		Connection connection = null;
+		PreparedStatement pstmt = null;
+		ResultSet resultSet = null;
+		String searchQuery = null;
+		Employee employee = null;
+
+		try {
+			connection = JdbcUtil.getConnection();
+			if (connection != null) {
+				searchQuery = "Select * from employees where empId = ?";
+				pstmt = connection.prepareStatement(searchQuery);
+			}
+			if (pstmt != null) {
+				pstmt.setInt(1, id);
+			}
+			if (pstmt != null) {
+				resultSet = pstmt.executeQuery();
+			}
+			if (resultSet.next()) {
+				employee = new Employee();
+				employee.setId(resultSet.getInt(1));
+				employee.setDept(resultSet.getString(2));
+				employee.setName(resultSet.getString(4));
+				employee.setSalary(resultSet.getInt(3));
+			}
+			if (employee != null) {
+				return employee;
+			}
+		} catch (SQLException | IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
