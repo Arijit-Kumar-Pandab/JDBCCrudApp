@@ -26,6 +26,7 @@ public class ControllerServlet extends HttpServlet {
 
 	private void doProcess(HttpServletRequest request, HttpServletResponse response) {
 		IEmployeeService employeeService = EmployeeServiceFactory.getEmployeeService();
+
 		if (request.getRequestURI().endsWith("addform")) {
 			String name = request.getParameter("ename");
 			Integer salary = Integer.parseInt(request.getParameter("esalary"));
@@ -44,6 +45,22 @@ public class ControllerServlet extends HttpServlet {
 				out.println("<h1 style='color:red;text-align:center'>Something went wrong</h1>");
 			}
 			out.close();
+		} else if (request.getRequestURI().endsWith("deleteform")) {
+			Integer id = Integer.parseInt(request.getParameter("eid"));
+			boolean check = employeeService.deleteEmployee(id);
+
+			PrintWriter out = null;
+			try {
+				out = response.getWriter();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			if (check) {
+				out.println("<h1 style='color:green;text-align:center;'>Deleted Successfully</h1>");
+			} else {
+				out.println("<h1 style='color:red;text-align:center;'>Something Went Wrong!!!</h1>");
+			}
 		}
 	}
 

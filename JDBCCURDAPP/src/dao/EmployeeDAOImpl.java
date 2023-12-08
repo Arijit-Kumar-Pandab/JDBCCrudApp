@@ -36,18 +36,39 @@ public class EmployeeDAOImpl implements IEmployeeDAO {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				JdbcUtil.closeResources(connection, pstmt, null);
-			} catch (SQLException se) {
-				se.printStackTrace();
-			}
 		}
 		return false;
 	}
 
 	@Override
 	public boolean deleteEmployee(int id) {
+		Connection connection = null;
+		PreparedStatement pstmt = null;
+		String deleteQuery = null;
+
+		try {
+			connection = JdbcUtil.getConnection();
+			if (connection != null) {
+				deleteQuery = "Delete from employees where empId = ?";
+				pstmt = connection.prepareStatement(deleteQuery);
+			}
+			if (pstmt != null) {
+				pstmt.setInt(1, id);
+			}
+
+			int rowAffected = -1;
+			if (pstmt != null) {
+				rowAffected = pstmt.executeUpdate();
+			}
+
+			if (rowAffected >= 1) {
+				return true;
+			}
+		} catch (SQLException | IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
