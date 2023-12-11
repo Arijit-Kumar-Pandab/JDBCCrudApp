@@ -113,6 +113,37 @@ public class EmployeeDAOImpl implements IEmployeeDAO {
 
 	@Override
 	public boolean updateEmployeeDetails(int id, String name, String dept, int salary) {
+		Connection connection = null;
+		PreparedStatement pstmt = null;
+		String updateQuery = null;
+
+		try {
+			connection = JdbcUtil.getConnection();
+
+			if (connection != null) {
+				updateQuery = "Update employees set Name = ?, empDept = ?, salary = ? where empId = ?";
+				pstmt = connection.prepareStatement(updateQuery);
+			}
+			if (pstmt != null) {
+				pstmt.setString(1, name);
+				pstmt.setString(2, dept);
+				pstmt.setInt(3, salary);
+				pstmt.setInt(4, id);
+			}
+			
+			int rowAffected = -1;
+			if (pstmt != null) {
+				rowAffected = pstmt.executeUpdate();
+			}
+			
+			if (rowAffected >= 1) {
+				return true;
+			}
+		} catch (IOException | SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
